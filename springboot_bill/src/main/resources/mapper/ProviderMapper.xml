@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mengxuegu.springboot.mapper.ProviderMapper">
+
+    <select id="getAllProviders" resultType="provider">
+        select *from provider
+    </select>
+
+    <select id="getProviders" resultType="provider" parameterType="provider">
+        select *from provider
+        <where>
+            <if test="providerName != null and providerName !=''">
+                and providerName like '%${providerName}%'
+            </if>
+        </where>
+    </select>
+
+    <select id="getProviderById" resultType="provider">
+        select *from provider where pid=#{pid}
+    </select>
+
+    <insert id="addProvider" parameterType="provider">
+        insert into provider
+        values(null,#{providerCode},#{providerName},#{people},#{phone},#{address},#{fax},#{describe},now())
+    </insert>
+
+    <update id="updateProvider" parameterType="provider">
+        update
+            provider
+        set
+            providerCode = #{providerCode},
+            providerName = #{providerName},
+            people = #{people},
+            phone = #{phone},
+            address = #{address},
+            fax = #{fax},
+            provider.`describe` = #{describe},-- describe是关键词,用provider.`describe`
+            createDate = now()
+        where pid = #{pid}
+    </update>
+
+    <delete id="deleteProvider" parameterType="int">
+        delete from provider where pid = #{pid}
+    </delete>
+
+</mapper>

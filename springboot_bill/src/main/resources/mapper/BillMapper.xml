@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mengxuegu.springboot.mapper.BillMapper">
+
+    <resultMap type="bill" id="BillResult">
+        <result property="bid" column="bid"/>
+        <result property="billCode" column="billCode"/>
+        <result property="billName" column="billName"/>
+        <result property="billCom" column="billCom"/>
+        <result property="billNum" column="billNum"/>
+        <result property="money" column="money"/>
+        <result property="pay" column="pay"/>
+        <result property="createDate" column="createDate"/>
+        <association property="provider" column="pid"
+                     select="com.mengxuegu.springboot.mapper.ProviderMapper.getProviderById"/>
+    </resultMap>
+
+
+    <select id="getBills" resultMap="BillResult" parameterType="bill">
+        select *from bill
+        <where>
+            <if test="billName != null and billName != '' ">
+                and billName like '%${billName}%'
+            </if>
+            <if test="provider != null and provider.pid !=null">
+                and pid =#{provider.pid}
+            </if>
+            <if test="pay != null">
+                and pay=#{pay}
+            </if>
+        </where>
+    </select>
+
+    <select id="getBillById" resultMap="BillResult" parameterType="int">
+        select *from bill where bid=#{bid}
+    </select>
+
+    <insert id="addBill" parameterType="bill">
+        insert into bill
+        values (null,#{billCode},#{billName},#{billCom},#{billNum},#{money},#{pay},#{provider.pid},now())
+    </insert>
+
+    <update id="updateBill" parameterType="bill">
+        update bill set
+        billCode=#{billCode},billName=#{billName},billCom=#{billCom},billNum=#{billNum},money=#{money},pay=#{pay},pid=#{provider.pid},createDate=now()
+        where bid=#{bid}
+    </update>
+
+    <delete id="deleteBill" parameterType="int">
+        delete from bill where bid=#{bid}
+    </delete>
+</mapper>
